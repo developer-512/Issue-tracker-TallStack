@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -42,4 +43,34 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public const ROLE=[
+       'USER' => 'user',
+        'TEAM'=>'team_member',
+        'ADMIN'=>'admin'
+    ];
+
+    public function issues(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Issue::class, 'user_id');
+    }
+
+    public function assignedIssues(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Issue::class, 'assigned_to');
+    }
+
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+    public function isTeamMember(): bool
+    {
+        return $this->role === 'team_member';
+    }
 }
