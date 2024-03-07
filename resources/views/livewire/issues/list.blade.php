@@ -5,6 +5,8 @@ use Livewire\Attributes\Layout;
 use App\Models\Issue;
 new #[Layout('layouts.app')] class extends Component {
 
+
+
     public function placeholder()
     {
         return <<<'HTML'
@@ -19,7 +21,7 @@ new #[Layout('layouts.app')] class extends Component {
     }
     public function with() : array
     {
-        $isAdmin=$isTeam=false;
+
        $issues=auth()->user()->issues()->orderBy('id')->get();
         if(auth()->user()->isTeamMember()){
             $issues=auth()->user()->assignedIssues()->orderBy('id')->get();
@@ -28,7 +30,9 @@ new #[Layout('layouts.app')] class extends Component {
         }
         return [
             'issues'=>$issues,
-            'team'=>(auth()->user()->isTeamMember()||auth()->user()->isAdmin())
+            'statuses'=>Issue::STATUS,
+            'priorities'=>Issue::PRIORITY,
+            'team'=>(!auth()->user()->isUser())
         ];
     }
 
@@ -43,17 +47,17 @@ new #[Layout('layouts.app')] class extends Component {
 
             <div class="text-center">
                 <p class="text-xl font-bold">
-                    No issues reported yet
+                    No issues Ticket yet
                 </p>
                 @if(!$team)
                 <p class="text-sm">
-                     Report your Support Issues here
+                     Submit your Support Issues here
                 </p>
                 @endif
-                <x-button primary icon-right="plus" class="mt-6" href="{{route('issues.create')}}">Report New Note</x-button>
+                <x-button primary icon="plus" class="mt-6" href="{{route('issues.create')}}">Submit New Issue Ticket</x-button>
             </div>
         @else
-            <x-button primary icon-right="plus" class="mt-6 mb-6" href="{{route('issues.create')}}">Report New Issues</x-button>
+            <x-button light info icon="plus" class="mt-6 mb-6" href="{{route('issues.create')}}">Submit New Issue Ticket</x-button>
             <div class="grid grid-cols-3 gap-4 mt-12">
                 @foreach ($issues as $issue)
                     <x-card wire:key='{{$issue->id}}' class="dark:bg-blue-950 dark:text-white">
@@ -68,8 +72,8 @@ new #[Layout('layouts.app')] class extends Component {
 {{--                            <div class="text=xs text-gray-400">{{\Carbon\Carbon::parse($note->send_date)->format('d/m/Y')}}</div>--}}
                         </div>
                         <div class="flex items-end justify-between mt-4 space-x-1">
-                            <p class="text-sm">Status:{{$issue->status}}</p>
-                            <p class="text-sm">Priority:{{$issue->priority}}</p>
+                            <p class="text-sm">Status: <span  class="{{$issue->status=='open'?'text-red-700':($issue->status=='in_progress'?'text-warning-600':'text-accent-green-700')}} font-bold" >{{$statuses[$issue->status]}}</span></p>
+                            <p class="text-sm">Priority: <span  class="text-{{$issue->priority=='low'?'blue-600':($issue->priority=='medium'?'warning-600':'red-700')}} font-bold" >{{$priorities[$issue->priority]}}</span></p>
                         </div>
                         <div class="flex items-end justify-between mt-4 space-x-1">
                             <p class="text-xs">@if(!$team) Assigned To : <span class="font-semibold dark:text-white">{{$issue->assignedTo->name??'Not Assigned Yet'}}</span>
@@ -78,8 +82,8 @@ new #[Layout('layouts.app')] class extends Component {
                             @endif
                             </p>
                             <div>
-                                <x-button icon="eye"></x-button>
-                                <x-button icon="trash" wire:click="delete('{{$issue->id}}')"></x-button>
+                                <x-mini-button rounded info icon="eye"/>
+                                <x-mini-button rounded negative  icon="trash" wire:click="delete('{{$issue->id}}')"/>
 
                             </div>
                         </div>

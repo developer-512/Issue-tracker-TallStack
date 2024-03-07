@@ -49,7 +49,7 @@ new #[Layout('layouts.app')] class extends Component {
 <x-slot name="header">
     <div class="flex justify-between">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Report New Issue') }}
+            {{ __('Submit New Issue Ticket') }}
         </h2>
         <div>
             <x-button secondary href="{{route('issues.index')}}">Back to All</x-button>

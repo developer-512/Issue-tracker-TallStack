@@ -46,8 +46,8 @@ class User extends Authenticatable
 
     public const ROLE=[
        'USER' => 'user',
-        'TEAM'=>'team_member',
-        'ADMIN'=>'admin'
+       'TEAM'=>'team_member',
+       'ADMIN'=>'admin'
     ];
 
     public function issues(): \Illuminate\Database\Eloquent\Relations\HasMany
@@ -67,10 +67,14 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role === self::ROLE['ADMIN'];
     }
     public function isTeamMember(): bool
     {
-        return $this->role === 'team_member';
+        return $this->role === self::ROLE['TEAM'];
+    }
+    public function isUser(): bool
+    {
+        return $this->role === self::ROLE['USER'];
     }
 }

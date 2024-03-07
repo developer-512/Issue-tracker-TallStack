@@ -3,7 +3,7 @@
 use Livewire\Volt\Component;
 use App\Models\Comment;
 use App\Models\Issue;
-use \WireUi\Traits\WireUiActions;
+use WireUi\Traits\WireUiActions;
 
 new class extends Component {
     use WireUiActions;
@@ -36,11 +36,11 @@ public function saveComment()
         Comments:
     </h2>
 
-    <form wire:submit="saveComment" post>
+    <form wire:submit="saveComment" method="post">
 
         <x-textarea wire:model="comment" label="New Comment"></x-textarea>
         <div class="mt-4">
-            <x-button type="submit" >Post Comment</x-button>
+            <x-button type="submit" spinner="saveComment">Post Comment</x-button>
         </div>
 
 
@@ -48,8 +48,11 @@ public function saveComment()
         <div class="mt-5">
             @forelse($comments as $comment)
                 <div class="flex mt-3">
-                    <x-card title="{{$comment->user->name}} ({{$comment->user->id==auth()->id()?'OP':'Team'}})" class="w-full" shadow="lg">
+                    <x-card title="{{$comment->user->name}} ({{$comment->user->id==$issue->user_id?'OP':'Team'}})" class="w-full" shadow="lg">
                         {{$comment->comment}}
+                        <div class="mt-6 border-t-2">
+                           Posted on: {{\Carbon\Carbon::parse($comment->created_at)->format('d/m/Y H:i')}}
+                        </div>
                     </x-card>
                 </div>
             @empty

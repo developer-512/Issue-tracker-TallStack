@@ -18,6 +18,17 @@ class Issue extends Model
         'assigned_to',
     ];
 
+    public const STATUS=[
+        'open'=>'Open',
+        'in_progress'=>'In Progress',
+        'closed'=>'Closed'
+    ];
+    public const PRIORITY=[
+        'low'=>'Low',
+        'medium'=>'Medium',
+        'high'=>'High'
+    ];
+
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
